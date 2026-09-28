@@ -102,7 +102,8 @@ h2.label { margin: 0; }
 /* ---------------------------------------------------------------- shell */
 .topbar { background: var(--bg); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; padding-top: env(safe-area-inset-top, 0px); }
 .topbar-inner { margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; gap: 2rem; }
-.wordmark { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-2); }
+.wordmark { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--serif); font-size: 1.1rem; font-weight: 700; color: var(--text); text-decoration: none; }
+.wordmark img { border-radius: 7px; }
 .topnav { display: flex; gap: 1.5rem; flex: 1; }
 .topnav a { color: var(--muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; padding: 0.25rem 0; border-bottom: 2px solid transparent; }
 .topnav a:hover { color: var(--text); }

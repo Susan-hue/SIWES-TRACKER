@@ -24,7 +24,10 @@ export default function App() {
     <div className="shell">
       <header className="topbar">
         <div className="topbar-inner">
-          <span className="wordmark">SIWES Outreach</span>
+          <NavLink to="/" className="wordmark" aria-label="SIWES Outreach home">
+            <img src="/logo.svg" alt="" width="28" height="28" />
+            <span>SIWES Outreach</span>
+          </NavLink>
           <nav className="topnav">
             <NavLink to="/" end>Dashboard</NavLink>
             <NavLink to="/pipeline">Pipeline</NavLink>
