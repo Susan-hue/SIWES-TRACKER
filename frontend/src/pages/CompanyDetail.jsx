@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { del, get, patch, post } from '../api'
+import Avatar, { PriorityBadge } from '../components/Avatar.jsx'
 import CompanyFields from '../components/CompanyFields.jsx'
 import FollowUpEditor from '../components/FollowUpEditor.jsx'
+import Icon from '../components/Icon.jsx'
 import LogInteractionForm from '../components/LogInteractionForm.jsx'
-import { CHANNEL_LABEL, PRIORITY_LABEL, STATUSES, daysAgoLabel, emptyCompany, formatDateTime } from '../constants'
+import { CHANNEL_LABEL, STATUSES, daysAgoLabel, emptyCompany, formatDateTime } from '../constants'
 
 const toUrl = (value, base) => {
   if (!value) return ''
@@ -16,20 +18,20 @@ const toUrl = (value, base) => {
 function Links({ company }) {
   const q = encodeURIComponent(company.name)
   const links = [
-    company.website && { href: company.website, label: 'Website' },
+    company.website && { href: company.website, label: 'Website', icon: 'globe' },
     company.linkedin
-      ? { href: toUrl(company.linkedin, 'https://www.linkedin.com/company/'), label: 'LinkedIn' }
-      : { href: `https://www.linkedin.com/search/results/companies/?keywords=${q}`, label: 'Find on LinkedIn', find: true },
+      ? { href: toUrl(company.linkedin, 'https://www.linkedin.com/company/'), label: 'LinkedIn', icon: 'linkedin' }
+      : { href: `https://www.linkedin.com/search/results/companies/?keywords=${q}`, label: 'Find on LinkedIn', icon: 'linkedin', find: true },
     company.instagram
-      ? { href: toUrl(company.instagram, 'https://www.instagram.com/'), label: 'Instagram' }
-      : { href: `https://www.google.com/search?q=${q}+Nigeria+site%3Ainstagram.com`, label: 'Find on Instagram', find: true },
-    company.email && { href: `mailto:${company.email}`, label: company.email },
+      ? { href: toUrl(company.instagram, 'https://www.instagram.com/'), label: 'Instagram', icon: 'instagram' }
+      : { href: `https://www.google.com/search?q=${q}+Nigeria+site%3Ainstagram.com`, label: 'Find on Instagram', icon: 'instagram', find: true },
+    company.email && { href: `mailto:${company.email}`, label: company.email, icon: 'mail' },
   ].filter(Boolean)
   return (
     <div className="links">
       {links.map((l) => (
         <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className={l.find ? 'find' : ''}>
-          {l.label}
+          <Icon name={l.icon} size={15} /> {l.label}
         </a>
       ))}
     </div>
@@ -77,7 +79,9 @@ export default function CompanyDetail() {
     load()
   }, [load])
 
-  if (!company) return error ? <p className="error-text">{error}</p> : <p className="muted">Loading…</p>
+  if (!company) {
+    return error ? <div className="empty-state error-text">{error}</div> : <div className="skeleton-grid"><div /><div /></div>
+  }
 
   const refreshCompany = async () => {
     const c = await get(`companies/${id}/`)
@@ -149,41 +153,55 @@ export default function CompanyDetail() {
   const channel = preferredChannel(company, interactions)
 
   return (
-    <div className="detail">
-      <Link to="/pipeline" className="back">← Pipeline</Link>
+    <div className="page detail">
+      <Link to="/pipeline" className="back"><Icon name="back" size={16} /> Pipeline</Link>
 
-      <header className="detail-head">
-        <div>
-          <h1>{company.name}</h1>
-          <div className="muted">
-            {company.sector || 'No sector'} · {PRIORITY_LABEL[company.priority]} priority ·{' '}
-            {company.channels.map((c) => CHANNEL_LABEL[c]).join(', ') || 'No channel set'}
+      <header className="profile card">
+        <div className="profile-main">
+          <Avatar name={company.name} size="lg" />
+          <div className="profile-text">
+            <h1>{company.name}</h1>
+            <div className="profile-meta">
+              <span>{company.sector || 'No sector'}</span>
+              <PriorityBadge priority={company.priority} />
+              {company.channels.map((c) => <span key={c} className="pill">{CHANNEL_LABEL[c]}</span>)}
+            </div>
+            <div className="muted small"><Icon name="clock" size={13} /> Last contact: {daysAgoLabel(company.days_since_contact)}</div>
           </div>
-          <div className="muted small">Last contact: {daysAgoLabel(company.days_since_contact)}</div>
+          <label className={`status-select st-${company.status}`}>
+            <span className="dot" />
+            <select value={company.status} onChange={(e) => updateStatus(e.target.value)} aria-label="Status">
+              {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+            </select>
+          </label>
         </div>
-        <label className="status-select">
-          Status
-          <select value={company.status} onChange={(e) => updateStatus(e.target.value)}>
-            {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-          </select>
-        </label>
+        {company.fit_rationale && (
+          <p className="fit"><Icon name="target" size={16} /> {company.fit_rationale}</p>
+        )}
+        <Links company={company} />
       </header>
 
-      <Links company={company} />
-      {company.fit_rationale && <p className="fit">{company.fit_rationale}</p>}
       {error && <p className="error-text">{error}</p>}
 
       <section className="card">
         <div className="card-head">
-          <h2>Follow ups</h2>
+          <div>
+            <h2>Follow ups</h2>
+            <p className="card-sub">
+              {config.drafting_enabled
+                ? 'AI drafts are suggestions. Edit, send it yourself, then mark it sent.'
+                : 'AI drafting is off until LLM_API_KEY is set on the server.'}
+            </p>
+          </div>
           <button className="btn primary" onClick={draftFollowUp} disabled={drafting}>
-            {drafting ? 'Drafting…' : config.drafting_enabled ? 'Draft follow up' : 'New follow up'}
+            <Icon name="sparkles" /> {drafting ? 'Drafting…' : config.drafting_enabled ? 'Draft follow up' : 'New follow up'}
           </button>
         </div>
-        {!config.drafting_enabled && (
-          <p className="muted small">AI drafting is off until LLM_API_KEY is set on the server. You can still write follow ups yourself.</p>
+        {pending.length === 0 && (
+          <div className="empty-state compact">
+            <span className="muted small">No follow up waiting.</span>
+          </div>
         )}
-        {pending.length === 0 && <p className="muted small">No follow up waiting.</p>}
         {pending.map((f) => (
           <FollowUpEditor
             key={f.id}
@@ -204,8 +222,11 @@ export default function CompanyDetail() {
 
       <section className="card">
         <div className="card-head">
-          <h2>Timeline</h2>
-          {!logging && <button className="btn" onClick={() => setLogging(true)}>Log interaction</button>}
+          <div>
+            <h2>Conversation</h2>
+            <p className="card-sub">Every message you sent and every reply, oldest first</p>
+          </div>
+          {!logging && <button className="btn" onClick={() => setLogging(true)}><Icon name="plus" /> Log interaction</button>}
         </div>
         {logging && (
           <LogInteractionForm
@@ -219,17 +240,28 @@ export default function CompanyDetail() {
             }}
           />
         )}
-        {interactions.length === 0 && !logging && <p className="muted small">Nothing logged yet.</p>}
-        <ol className="timeline">
+        {interactions.length === 0 && !logging && (
+          <div className="empty-state compact">
+            <span className="empty-icon"><Icon name="message" size={20} /></span>
+            <strong>No messages yet</strong>
+            <span className="muted small">Log the first message you send to start the timeline.</span>
+          </div>
+        )}
+        <ol className="chat">
           {interactions.map((i) => (
-            <li key={i.id} className={`tl-item ${i.direction}`}>
-              <div className="tl-meta">
-                <strong>{i.direction === 'sent' ? 'You sent' : 'They replied'}</strong>
-                <span className="muted small">via {CHANNEL_LABEL[i.channel]} · {formatDateTime(i.date)}</span>
-                <button className="link-btn small danger" onClick={() => deleteInteraction(i.id)}>Remove</button>
+            <li key={i.id} className={`bubble-row ${i.direction}`}>
+              <div className="bubble">
+                <div className="bubble-meta">
+                  <Icon name={i.direction === 'sent' ? 'send' : 'reply'} size={13} />
+                  <strong>{i.direction === 'sent' ? 'You' : company.name}</strong>
+                  <span>· {CHANNEL_LABEL[i.channel]} · {formatDateTime(i.date)}</span>
+                </div>
+                {i.message ? <p className="bubble-text">{i.message}</p> : <p className="bubble-text muted">(no message text)</p>}
+                {i.notes && <p className="bubble-note">{i.notes}</p>}
+                <button className="bubble-remove" onClick={() => deleteInteraction(i.id)} aria-label="Remove interaction">
+                  <Icon name="trash" size={13} />
+                </button>
               </div>
-              {i.message && <p className="tl-message">{i.message}</p>}
-              {i.notes && <p className="muted small">{i.notes}</p>}
             </li>
           ))}
         </ol>
@@ -238,20 +270,24 @@ export default function CompanyDetail() {
       <section className="card">
         <div className="card-head">
           <h2>Details</h2>
-          {!editing && <button className="btn" onClick={() => { setEditing(true); setSaveState('') }}>Edit</button>}
-          {saveState === 'saved' && !editing && <span className="muted small">Saved</span>}
+          {!editing && (
+            <button className="btn" onClick={() => { setEditing(true); setSaveState('') }}>
+              <Icon name="edit" /> Edit
+            </button>
+          )}
+          {saveState === 'saved' && !editing && <span className="pill ok">Saved</span>}
         </div>
         {editing ? (
           <form className="stack" onSubmit={saveDetails}>
             <CompanyFields form={form} setForm={setForm} />
             <div className="row end">
-              <button type="button" className="btn ghost danger" onClick={deleteCompany}>Delete company</button>
+              <button type="button" className="btn ghost danger" onClick={deleteCompany}><Icon name="trash" /> Delete company</button>
               <span className="spacer" />
               <button type="button" className="btn ghost" onClick={() => { setEditing(false); setForm({ ...emptyCompany, ...company }) }}>
                 Cancel
               </button>
               <button type="submit" className="btn primary" disabled={saveState === 'saving'}>
-                {saveState === 'saving' ? 'Saving…' : 'Save'}
+                {saveState === 'saving' ? 'Saving…' : 'Save changes'}
               </button>
             </div>
           </form>

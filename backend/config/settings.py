@@ -5,6 +5,7 @@ loaded in development). See .env.example for the full list.
 """
 
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
@@ -78,6 +79,9 @@ DATABASES = {
         conn_max_age=600,
     )
 }
+# Tests never touch the real (Supabase) database.
+if "test" in sys.argv:
+    DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
 
 AUTH_PASSWORD_VALIDATORS = []
 
@@ -111,7 +115,9 @@ CORS_ALLOW_HEADERS = (
     "x-access-key",
 )
 
-if not DEBUG:
+# Force HTTPS only behind Render's proxy (it sets RENDER=true), never on a
+# local runserver, which speaks plain http whatever DJANGO_DEBUG says.
+if env_bool("DJANGO_SSL_REDIRECT", bool(os.environ.get("RENDER"))):
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_SSL_REDIRECT = True
 

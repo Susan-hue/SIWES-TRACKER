@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { del, patch, post } from '../api'
 import { CHANNELS, formatDate } from '../constants'
+import Icon from './Icon.jsx'
 
 /** An editable draft. Nothing is sent from here: "Mark as sent" only records
  *  that you sent it yourself (and logs it on the timeline). */
@@ -54,8 +55,9 @@ export default function FollowUpEditor({ followup, defaultChannel, draftingEnabl
   return (
     <div className="followup">
       <div className="followup-head">
+        <span className="followup-icon"><Icon name="sparkles" size={15} /></span>
         <strong>Follow up due {formatDate(followup.due_date)}</strong>
-        {followup.auto_created && <span className="pill">Auto</span>}
+        {followup.auto_created && <span className="pill info">Auto created</span>}
       </div>
       <textarea
         rows={6}
@@ -65,11 +67,11 @@ export default function FollowUpEditor({ followup, defaultChannel, draftingEnabl
       />
       {error && <p className="error-text">{error}</p>}
       <div className="row wrap">
-        <button className="btn" onClick={copy} disabled={!text}>{copied ? 'Copied' : 'Copy'}</button>
+        <button className="btn" onClick={copy} disabled={!text}><Icon name={copied ? 'check' : 'copy'} size={15} /> {copied ? 'Copied' : 'Copy'}</button>
         <button className="btn" onClick={save} disabled={!dirty || !!busy}>{busy === 'save' ? 'Saving…' : 'Save draft'}</button>
         {draftingEnabled && (
           <button className="btn" onClick={regenerate} disabled={!!busy}>
-            {busy === 'regenerate' ? 'Drafting…' : text ? 'Redraft' : 'Generate draft'}
+            <Icon name="sparkles" size={15} /> {busy === 'regenerate' ? 'Drafting…' : text ? 'Redraft' : 'Generate draft'}
           </button>
         )}
         <span className="spacer" />
@@ -77,10 +79,10 @@ export default function FollowUpEditor({ followup, defaultChannel, draftingEnabl
           {CHANNELS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
         </select>
         <button className="btn primary" onClick={markSent} disabled={!text.trim() || !!busy}>
-          {busy === 'sent' ? 'Saving…' : 'I sent this'}
+          <Icon name="check" size={15} /> {busy === 'sent' ? 'Saving…' : 'I sent this'}
         </button>
         <button className="btn ghost danger" onClick={remove} disabled={!!busy} aria-label="Delete follow up">
-          Delete
+          <Icon name="trash" size={15} />
         </button>
       </div>
     </div>

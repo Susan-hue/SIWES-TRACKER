@@ -1,12 +1,7 @@
-# Render Blueprint: backend web service + Postgres.
+# Render Blueprint: backend web service. The database is Supabase Postgres.
 # The daily follow-up check runs from GitHub Actions (.github/workflows/daily-check.yml)
 # which is free; a Render Cron Job running `python manage.py check_followups`
 # works too but is a paid service type.
-databases:
-  - name: siwes-tracker-db
-    plan: free
-    databaseName: siwes_tracker
-
 services:
   - type: web
     name: siwes-tracker-api
@@ -20,9 +15,7 @@ services:
       - key: PYTHON_VERSION
         value: 3.12.3
       - key: DATABASE_URL
-        fromDatabase:
-          name: siwes-tracker-db
-          property: connectionString
+        sync: false   # Supabase Session pooler URI (port 5432) + ?sslmode=require
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DJANGO_DEBUG

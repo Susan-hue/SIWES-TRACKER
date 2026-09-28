@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { get, patch } from '../api'
-import { PRIORITY_LABEL, STATUSES, daysAgoLabel } from '../constants'
+import Avatar, { PriorityBadge } from '../components/Avatar.jsx'
+import Icon from '../components/Icon.jsx'
+import { STATUSES, daysAgoLabel } from '../constants'
 
 const PRIORITY_RANK = { high: 0, medium: 1, low: 2 }
 
@@ -19,16 +21,20 @@ function Card({ company, onMove, onOpen }) {
       tabIndex={0}
     >
       <div className="kcard-top">
-        <strong>{company.name}</strong>
-        <span className={`prio prio-${company.priority}`}>{PRIORITY_LABEL[company.priority]}</span>
+        <Avatar name={company.name} size="sm" />
+        <div className="kcard-title">
+          <strong>{company.name}</strong>
+          <span className="muted small">{company.sector || 'No sector'}</span>
+        </div>
       </div>
-      <div className="muted small">{company.sector || 'No sector'}</div>
-      <div className="kcard-bottom">
-        <span className="small">{daysAgoLabel(company.days_since_contact)}</span>
-        {company.pending_followups > 0 && <span className="pill">Follow up</span>}
+      <div className="kcard-meta">
+        <PriorityBadge priority={company.priority} />
+        <span className="kcard-time"><Icon name="clock" size={13} /> {daysAgoLabel(company.days_since_contact)}</span>
+        {company.pending_followups > 0 && <span className="pill warn">Follow up</span>}
       </div>
       <select
         aria-label={`Move ${company.name}`}
+        className="kcard-select"
         value={company.status}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
@@ -80,31 +86,42 @@ export default function Pipeline() {
     }
   }
 
-  if (!companies) return error ? <p className="error-text">{error}</p> : <p className="muted">Loading…</p>
+  if (!companies) {
+    return error ? <div className="empty-state error-text">{error}</div> : <div className="skeleton-grid"><div /><div /><div /></div>
+  }
 
   return (
-    <div className="pipeline">
-      <div className="toolbar">
-        <input
-          type="search"
-          placeholder="Search name or sector"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} aria-label="Filter by priority">
-          <option value="">All priorities</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-        <span className="muted small hide-narrow">Drag cards between columns, or use the dropdown on a card.</span>
+    <div className="page pipeline">
+      <div className="page-head">
+        <div>
+          <h1>Pipeline</h1>
+          <p className="muted">{companies.length} companies · drag a card or use its dropdown to move it</p>
+        </div>
+        <div className="toolbar">
+          <label className="search">
+            <Icon name="search" size={16} />
+            <input
+              type="search"
+              placeholder="Search name or sector"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </label>
+          <div className="segmented" role="group" aria-label="Filter by priority">
+            {[['', 'All'], ['high', 'High'], ['medium', 'Medium'], ['low', 'Low']].map(([value, label]) => (
+              <button key={value} className={priority === value ? 'on' : ''} onClick={() => setPriority(value)}>
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
       {error && <p className="error-text">{error}</p>}
       <div className="board">
         {columns.map((col) => (
           <section
             key={col.value}
-            className={`kcol ${dragOver === col.value ? 'over' : ''}`}
+            className={`kcol st-${col.value} ${dragOver === col.value ? 'over' : ''}`}
             onDragOver={(e) => {
               e.preventDefault()
               setDragOver(col.value)
@@ -118,10 +135,12 @@ export default function Pipeline() {
             }}
           >
             <header className="kcol-head">
-              <span>{col.label}</span>
+              <span className="dot" />
+              <span className="kcol-title">{col.label}</span>
               <span className="count">{col.items.length}</span>
             </header>
             <div className="kcol-body">
+              {col.items.length === 0 && <div className="kcol-empty">Drop here</div>}
               {col.items.map((c) => (
                 <Card key={c.id} company={c} onMove={move} onOpen={() => navigate(`/companies/${c.id}`)} />
               ))}

@@ -3,7 +3,7 @@
 A personal tool for tracking outreach to Nigerian Cloud/DevOps companies. It has a pipeline board, an interaction timeline, AI-drafted follow ups (never sent automatically), response analytics, and push reminders. It installs on your phone as a PWA.
 
 ```
-backend/   Django REST Framework API (Postgres on Render, SQLite locally)
+backend/   Django REST Framework API (Render), data in Supabase Postgres
 frontend/  React + Vite PWA (Vercel)
            backend/data/companies.csv holds the 50 researched companies (seed data)
 ```
@@ -14,7 +14,7 @@ frontend/  React + Vite PWA (Vercel)
 # Backend
 cd backend
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
-cp .env.example .env              # add LLM_API_KEY to enable drafting
+cp .env.example .env              # add LLM_API_KEY; DATABASE_URL = Supabase, or unset for SQLite
 .venv/bin/python manage.py migrate
 .venv/bin/python manage.py import_companies data/companies.csv
 .venv/bin/python manage.py runserver
@@ -38,19 +38,16 @@ Run the tests with `.venv/bin/python manage.py test tracker`.
 ## Deploy
 
 ### Backend on Render
-1. Push this folder to a GitHub repo, then in Render choose **New > Blueprint** and pick the repo. `render.yaml` creates the web service and a free Postgres database.
+1. Push this folder to a GitHub repo, then in Render choose **New > Blueprint** and pick the repo. `render.yaml` creates the web service.
 2. Fill in the env vars it asks for:
+   - `DATABASE_URL`: your Supabase **Session pooler** URI. Get it from Supabase: **Connect**, then **Session pooler**. It looks like `postgresql://postgres.<ref>:<password>@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require`. Don't use the direct `db.<ref>.supabase.co` URI: it is IPv6-only, and Render can't reach it.
    - `CORS_ALLOWED_ORIGINS` and `FRONTEND_URL`: your Vercel URL, e.g. `https://siwes-tracker.vercel.app`
    - `LLM_API_KEY`: your Groq (`gsk_…`), xAI (`xai-…`) or Anthropic (`sk-ant-…`) key. The provider is picked from the prefix. `LLM_MODEL` is optional.
    - `ACCESS_KEY`: any long random string. **Set this.** The API has no accounts, so without it anyone who finds the URL can read your data and spend your LLM credits. The app asks for the key once per device.
    - `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`: generate them with `python manage.py generate_vapid_keys`
-3. Load the companies once, from your own machine. In Render, open the database and copy its **External Database URL**, then run:
-   ```bash
-   cd backend
-   DATABASE_URL='<external database url>' .venv/bin/python manage.py import_companies data/companies.csv
-   ```
+3. Tables and the 50 companies are already in Supabase. Every deploy runs `migrate`. To import again from your laptop, run `.venv/bin/python manage.py import_companies data/companies.csv` while `DATABASE_URL` in `backend/.env` points at Supabase.
 
-Note: Render's free Postgres expires after 30 days unless you upgrade it. Export a backup before then, or move to a paid plan.
+Note: Supabase pauses free projects after a week with no activity. The daily GitHub Actions check keeps it active.
 
 ### Frontend on Vercel
 Import the repo, set **Root Directory** to `frontend`, and add `VITE_API_URL=https://<your-render-service>.onrender.com`. `vercel.json` handles client-side routes and makes sure the service worker is never served stale.
