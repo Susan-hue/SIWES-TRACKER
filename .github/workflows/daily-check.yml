@@ -1,0 +1,17 @@
+# Once a day: create follow-ups for silent companies and push reminders.
+# Repo secrets needed: API_URL (e.g. https://siwes-tracker-api.onrender.com) and CRON_SECRET.
+name: Daily follow-up check
+on:
+  schedule:
+    - cron: "0 7 * * *"   # 08:00 Lagos time
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the backend
+        run: |
+          # Free Render services sleep; the long timeout covers the cold start.
+          curl --fail-with-body --max-time 120 --retry 2 --retry-delay 30 \
+            -X POST -H "X-Cron-Secret: ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.API_URL }}/api/cron/daily/"

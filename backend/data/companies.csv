@@ -1,0 +1,51 @@
+Company,Sector,Website,Why it fits,Priority,Channel
+Flutterwave,Fintech & Payments,flutterwave.com,Large engineering org running cloud infra at scale across 35+ countries. Focus: Fintech / payments infrastructure.,Medium,LinkedIn/Instagram
+Paystack,Fintech & Payments,paystack.com,Backend and DevOps-heavy engineering culture. Focus: Fintech / payments.,Medium,LinkedIn/Instagram
+Interswitch,Fintech & Payments,interswitchgroup.com,Runs Nigeria's payment switching rails; heavy infra needs. Focus: Fintech / payment switching infrastructure.,Medium,Email/LinkedIn
+Moniepoint,Fintech & Payments,moniepoint.com,"Nigeria's largest POS network; big infra team. Focus: Fintech / business banking, POS infra.",Medium,LinkedIn
+PalmPay,Fintech & Payments,palmpay.com,"Large-scale consumer app, cloud-native. Focus: Fintech / mobile payments.",Medium,Instagram/LinkedIn
+OPay,Fintech & Payments,,"High-traffic app, DevOps-heavy backend. Focus: Fintech / mobile payments.",Medium,Instagram/LinkedIn
+Kuda Bank,Fintech & Payments,kuda.com,Cloud-native neobank. Focus: Fintech / digital bank.,Medium,Instagram/LinkedIn
+PiggyVest,Fintech & Payments,piggyvest.com,Cloud-based consumer savings platform. Focus: Fintech / savings & investment.,Medium,Instagram/LinkedIn
+Cowrywise,Fintech & Payments,cowrywise.com,Cloud infrastructure for investment products. Focus: Fintech / wealth management.,Medium,Instagram/LinkedIn
+FairMoney,Fintech & Payments,fairmoney.io,Backend/DevOps team for digital lending platform. Focus: Fintech / digital lending.,Medium,LinkedIn
+Bamboo,Fintech & Payments,investbamboo.com,Cloud-based stock investment/trading platform. Focus: Fintech / stock investment app.,Medium,Instagram/LinkedIn
+Nomba,Fintech & Payments,nomba.com,POS and merchant infrastructure (formerly Kudi). Focus: Fintech / payments (formerly Kudi).,Medium,LinkedIn
+Rack Centre,Cloud & Data Center Infrastructure,rack-centre.com,Nigeria's leading Tier III data center; direct cloud/infra work. Focus: Cloud & data center / colocation.,High,Email
+MDXi (Equinix / MainOne),Cloud & Data Center Infrastructure,,Major cloud gateway and colocation provider in Lekki. Focus: Cloud & data center.,High,Email/LinkedIn
+Galaxy Backbone,Cloud & Data Center Infrastructure,galaxybackbone.com.ng,Government cloud/data center operator. Focus: Cloud & data center (public sector).,High,Email
+Layer3,Cloud & Data Center Infrastructure,layer3.ng,"Combines managed cloud services with cybersecurity. Focus: Cloud, IT & cybersecurity.",High,Email/LinkedIn
+Digital Realty Nigeria (Medallion),Cloud & Data Center Infrastructure,,"Data center operator, ABV1 facility. Focus: Cloud & data center.",High,Email
+Africa Data Centres Nigeria,Cloud & Data Center Infrastructure,africadatacentres.com,"Pan-African data center operator, Lagos facility. Focus: Cloud & data center.",High,Email
+21st Century Technologies,Cloud & Data Center Infrastructure,,Data center investor/operator. Focus: Cloud & data center / IT infrastructure.,High,Email
+INQ Digital,Cloud & Data Center Infrastructure,,"Edge AI/IoT, SDN/NFV cloud services. Focus: Cloud & edge infrastructure.",High,Email
+Softcom,Software Development & IT Consulting,softcom.ng,Cloud migration and enterprise DevOps projects. Focus: Enterprise software / cloud migration.,High,LinkedIn/Email
+Poterby Tech,Software Development & IT Consulting,poterbytech.com,"Uses AWS/GCP, cloud-native stack. Focus: Software development.",Medium,LinkedIn
+Edmoss,Software Development & IT Consulting,edmoss.com.ng,Builds cloud platforms and enterprise software. Focus: Software / cloud platforms.,Medium,Instagram/LinkedIn
+Lagetronix,Software Development & IT Consulting,lagetronix.com,Microsoft/Cisco cloud computing partner. Focus: IT & cloud computing consulting.,High,Email
+CWG Plc,Software Development & IT Consulting,cwgplc.com,One of Nigeria's largest listed IT companies. Focus: IT infrastructure & enterprise tech.,High,Email
+Precise Financial Systems,Software Development & IT Consulting,,Core banking and fintech software provider. Focus: Fintech software / banking tech.,Medium,Email
+Sidmach Technologies,Software Development & IT Consulting,,Nigerian ERP and banking software provider. Focus: Enterprise software / banking IT.,Medium,Email
+Zinox Technologies,Software Development & IT Consulting,,"Runs its own data centre operations. Focus: IT hardware, cloud & data center.",High,Email
+Interra Networks,Software Development & IT Consulting,,Cloud-based data solutions for enterprises. Focus: Data & analytics / enterprise IT.,Medium,Email
+Mobirevo,Software Development & IT Consulting,,Cloud-based SaaS application development. Focus: Software / SaaS development.,Medium,Instagram/LinkedIn
+Digital Encode,Cybersecurity,digitalencode.net,"Cloud security, VAPT, compliance work. Focus: Cybersecurity, cloud security & compliance.",High,Email
+Zoracom,Cybersecurity,,"Identity management, security for telecom/fintech. Focus: Cybersecurity.",Medium,Email
+CyberDome Nigeria,Cybersecurity,,Managed security & SOC services. Focus: Cybersecurity / SOC.,Medium,Email
+Cybervergent,Cybersecurity,cybervergent.com,Pan-African cybersecurity provider (formerly Infoprive). Focus: Cybersecurity / IT services (formerly Infoprive).,Medium,Email
+Tanta Innovative,Cybersecurity,,IT strategy consulting and managed services. Focus: Cybersecurity / IT strategy.,Medium,Email
+Ethnos Cyber,Cybersecurity,,Cyber defense and security services. Focus: Cybersecurity.,Medium,Email
+Neo Cloud Technologies,SIWES / Training & Placement,,Explicitly runs SIWES placements in cloud computing & cybersecurity (Abuja). Focus: Cloud computing / SIWES training (Abuja).,High,Instagram/Email
+HiiT PLC,SIWES / Training & Placement,hiitplc.com,Dedicated Cloud Computing track in its SIWES+ program (multi-city). Focus: IT training / SIWES+ program (multi-city).,High,Email/Instagram
+NitHub,SIWES / Training & Placement,,"Accepts CS/Engineering SIWES students (Lagos, UNILAG). Focus: Innovation hub / SIWES placements (Lagos, UNILAG).",High,Email
+Learnovo,SIWES / Training & Placement,learnovo.ng,Explicit Cloud Computing & DevOps SIWES/internship track. Focus: Cloud Computing & DevOps mentorship/training.,High,Instagram/Email
+Early Code Institute,SIWES / Training & Placement,earlycode.net,SIWES/IT placements for CS and related fields (Abuja). Focus: IT/SIWES placement (Abuja).,High,Email
+Draftek Systems Ltd,SIWES / Training & Placement,draftek.org,Project-based computer training with SIWES intake (Abuja). Focus: IT training / SIWES placement (Abuja).,High,Email/Instagram
+DPIA Innovations,SIWES / Training & Placement,,Tech adoption for businesses and schools. Focus: IT / SIWES placement.,Medium,Email
+Multiset Tech Int'l Services,SIWES / Training & Placement,,ICT firm and training center (Port Harcourt). Focus: ICT & SIWES placement (Port Harcourt).,Medium,Email
+Nerdherd Limited,SIWES / Training & Placement,,"Systems engineering, enterprise networks (Lagos). Focus: ICT solutions / systems integration (Lagos).",Medium,Email
+MTN Nigeria,Telecom,mtnonline.com,Large IT/network infrastructure team. Focus: Telecom / digital & IT services.,Medium,LinkedIn/Email
+Globacom (Glo),Telecom,gloworld.com,Network and IT infrastructure. Focus: Telecom / IT services.,Medium,Email
+Jumia Nigeria,E-commerce & Logistics Tech,jumia.com.ng,"High-traffic e-commerce, cloud-hosted. Focus: E-commerce / cloud-based platform.",Medium,LinkedIn
+Konga,E-commerce & Logistics Tech,konga.com,Cloud-based retail platform. Focus: E-commerce / logistics tech.,Medium,LinkedIn/Instagram
+MAX (Metro Africa Xpress),E-commerce & Logistics Tech,,Cloud-based logistics and delivery platform. Focus: Mobility/logistics tech.,Medium,LinkedIn/Instagram

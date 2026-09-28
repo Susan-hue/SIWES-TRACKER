@@ -1,0 +1,47 @@
+# Render Blueprint: backend web service + Postgres.
+# The daily follow-up check runs from GitHub Actions (.github/workflows/daily-check.yml)
+# which is free; a Render Cron Job running `python manage.py check_followups`
+# works too but is a paid service type.
+databases:
+  - name: siwes-tracker-db
+    plan: free
+    databaseName: siwes_tracker
+
+services:
+  - type: web
+    name: siwes-tracker-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: ./build.sh
+    startCommand: gunicorn config.wsgi:application
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: DATABASE_URL
+        fromDatabase:
+          name: siwes-tracker-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: CRON_SECRET
+        generateValue: true
+      - key: ACCESS_KEY
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false   # e.g. https://siwes-tracker.vercel.app
+      - key: FRONTEND_URL
+        sync: false
+      - key: LLM_API_KEY
+        sync: false   # gsk_... (Groq), xai-... (Grok) or sk-ant-... (Claude)
+      - key: LLM_MODEL
+        sync: false   # optional, defaults per provider
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        value: mailto:amechi4emma@gmail.com
