@@ -54,35 +54,43 @@ export default function FollowUpEditor({ followup, defaultChannel, draftingEnabl
 
   return (
     <div className="followup">
-      <div className="followup-head">
-        <span className="followup-icon"><Icon name="sparkles" size={15} /></span>
-        <strong>Follow up due {formatDate(followup.due_date)}</strong>
-        {followup.auto_created && <span className="pill info">Auto created</span>}
+      <div className="facts compact">
+        <div><div className="label">Due</div>{formatDate(followup.due_date)}</div>
+        <div><div className="label">Created</div>{followup.auto_created ? 'Automatically' : 'By you'}</div>
+        <div>
+          <div className="label">Send via</div>
+          <select className="inline-select" value={channel} onChange={(e) => setChannel(e.target.value)}>
+            {CHANNELS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
+          </select>
+        </div>
       </div>
+
+      <div className="label">Message draft</div>
       <textarea
-        rows={6}
+        className="mono-box"
+        rows={8}
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder={draftingEnabled ? 'Write your follow up, or generate a draft.' : 'Write your follow up here.'}
       />
       {error && <p className="error-text">{error}</p>}
-      <div className="row wrap">
-        <button className="btn" onClick={copy} disabled={!text}><Icon name={copied ? 'check' : 'copy'} size={15} /> {copied ? 'Copied' : 'Copy'}</button>
-        <button className="btn" onClick={save} disabled={!dirty || !!busy}>{busy === 'save' ? 'Saving…' : 'Save draft'}</button>
+
+      <div className="action-bar">
+        <button className="btn danger-outline" onClick={remove} disabled={!!busy}>Discard</button>
+        <span className="spacer" />
+        <button className="btn" onClick={copy} disabled={!text}>
+          <Icon name={copied ? 'check' : 'copy'} size={14} /> {copied ? 'Copied' : 'Copy'}
+        </button>
+        {dirty && (
+          <button className="btn" onClick={save} disabled={!!busy}>{busy === 'save' ? 'Saving…' : 'Save draft'}</button>
+        )}
         {draftingEnabled && (
           <button className="btn" onClick={regenerate} disabled={!!busy}>
-            <Icon name="sparkles" size={15} /> {busy === 'regenerate' ? 'Drafting…' : text ? 'Redraft' : 'Generate draft'}
+            {busy === 'regenerate' ? 'Drafting…' : text ? 'Redraft' : 'Generate draft'}
           </button>
         )}
-        <span className="spacer" />
-        <select value={channel} onChange={(e) => setChannel(e.target.value)} aria-label="Channel you sent it on">
-          {CHANNELS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
-        </select>
         <button className="btn primary" onClick={markSent} disabled={!text.trim() || !!busy}>
-          <Icon name="check" size={15} /> {busy === 'sent' ? 'Saving…' : 'I sent this'}
-        </button>
-        <button className="btn ghost danger" onClick={remove} disabled={!!busy} aria-label="Delete follow up">
-          <Icon name="trash" size={15} />
+          <Icon name="send" size={14} /> {busy === 'sent' ? 'Saving…' : 'Mark as sent'}
         </button>
       </div>
     </div>

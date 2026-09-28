@@ -34,16 +34,20 @@ export function daysAgoLabel(days) {
   return `${days} days ago`
 }
 
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const pad = (n) => String(n).padStart(2, '0')
+const shortDate = (d) => `${d.getDate()} ${MONTHS[d.getMonth()]} ${pad(d.getFullYear() % 100)}`
+
+// "29 Aug 26, 14:05"
 export function formatDateTime(iso) {
-  return new Date(iso).toLocaleString(undefined, {
-    day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit',
-  })
+  const d = new Date(iso)
+  return `${shortDate(d)}, ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
+// "29 Aug 26". Date-only strings ("2026-09-28") must not shift across time zones.
 export function formatDate(iso) {
-  // Date-only strings ("2026-09-28") must not shift across time zones.
   const [y, m, d] = iso.split('-').map(Number)
-  return new Date(y, m - 1, d).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+  return shortDate(new Date(y, m - 1, d))
 }
 
 export const emptyCompany = {
