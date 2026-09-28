@@ -44,7 +44,11 @@ Run the tests with `.venv/bin/python manage.py test tracker`.
    - `LLM_API_KEY`: your Groq (`gsk_…`), xAI (`xai-…`) or Anthropic (`sk-ant-…`) key. The provider is picked from the prefix. `LLM_MODEL` is optional.
    - `ACCESS_KEY`: any long random string. **Set this.** The API has no accounts, so without it anyone who finds the URL can read your data and spend your LLM credits. The app asks for the key once per device.
    - `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY`: generate them with `python manage.py generate_vapid_keys`
-3. Load the companies from the service's **Shell** tab: `python manage.py import_companies data/companies.csv`
+3. Load the companies once, from your own machine. In Render, open the database and copy its **External Database URL**, then run:
+   ```bash
+   cd backend
+   DATABASE_URL='<external database url>' .venv/bin/python manage.py import_companies data/companies.csv
+   ```
 
 Note: Render's free Postgres expires after 30 days unless you upgrade it. Export a backup before then, or move to a paid plan.
 
