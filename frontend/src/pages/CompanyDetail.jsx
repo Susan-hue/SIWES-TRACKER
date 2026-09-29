@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { del, get, patch, post } from '../api'
 import { PageHeader, PriorityBadge } from '../components/Badges.jsx'
@@ -7,6 +7,7 @@ import FollowUpEditor from '../components/FollowUpEditor.jsx'
 import Icon from '../components/Icon.jsx'
 import LogInteractionForm from '../components/LogInteractionForm.jsx'
 import { CHANNEL_LABEL, STATUSES, daysAgoLabel, emptyCompany, formatDateTime } from '../constants'
+import useRefresh from '../useRefresh'
 
 const toUrl = (value, base) => {
   if (!value) return ''
@@ -47,7 +48,7 @@ export default function CompanyDetail() {
   const [drafting, setDrafting] = useState(false)
   const [error, setError] = useState('')
 
-  const load = useCallback(async () => {
+  useRefresh(async () => {
     try {
       const [c, ints, fus, cfg] = await Promise.all([
         get(`companies/${id}/`),
@@ -56,7 +57,7 @@ export default function CompanyDetail() {
         get('config/'),
       ])
       setCompany(c)
-      setForm({ ...emptyCompany, ...c })
+      if (!editing) setForm({ ...emptyCompany, ...c }) // keep unsaved edits
       setInteractions(ints)
       setFollowups(fus)
       setConfig(cfg)
@@ -64,10 +65,6 @@ export default function CompanyDetail() {
       setError(err.message)
     }
   }, [id])
-
-  useEffect(() => {
-    load()
-  }, [load])
 
   if (!company) return error ? <p className="error-text">{error}</p> : <p className="muted">Loading…</p>
 

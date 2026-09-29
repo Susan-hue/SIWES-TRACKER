@@ -178,6 +178,14 @@ def send_push(title, body, url="/"):
 
 # ------------------------------------------------------------------- analytics
 
+REPLIED_STATUSES = {
+    Company.Status.REPLIED,
+    Company.Status.IN_CONVERSATION,
+    Company.Status.INTERVIEW,
+    Company.Status.CLOSED_WON,
+}
+
+
 def _rate(responded, contacted):
     return round(responded / contacted, 3) if contacted else None
 
@@ -200,18 +208,23 @@ def dashboard_data():
         sent = [i for i in interactions if i.direction == Interaction.Direction.SENT]
         received = [i for i in interactions if i.direction == Interaction.Direction.RECEIVED]
         messages_sent += len(sent)
-        if not sent:
+
+        # Moving a card on the pipeline counts even when no message was logged.
+        contacted = bool(sent) or company.status != Company.Status.NOT_CONTACTED
+        if not contacted:
             continue
-
-        first_sent = min(i.date for i in sent)
-        first_contact_dates.append(timezone.localdate(first_sent))
+        responded = bool(received) or company.status in REPLIED_STATUSES
         contacted_total += 1
-        responded = bool(received)
         responded_total += responded
-
         sector = company.sector.strip() or "Unspecified"
         by_sector[sector][0] += 1
         by_sector[sector][1] += responded
+
+        # Channel, weekly volume and reply time need dated messages.
+        if not sent:
+            continue
+        first_sent = min(i.date for i in sent)
+        first_contact_dates.append(timezone.localdate(first_sent))
 
         for channel in {i.channel for i in sent}:
             by_channel[channel][0] += 1

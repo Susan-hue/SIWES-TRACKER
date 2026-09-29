@@ -13,12 +13,12 @@ cleanupOutdatedCaches()
 precacheAndRoute(self.__WB_MANIFEST)
 registerRoute(new NavigationRoute(createHandlerBoundToURL('/index.html')))
 
-// API reads: fresh when online, last known data when offline.
+// API reads: always from the network when online (Render can take ~60s to
+// wake, so no timeout); the last saved copy is used only when offline.
 registerRoute(
   ({ url, request }) => request.method === 'GET' && url.pathname.startsWith('/api/'),
   new NetworkFirst({
     cacheName: 'api',
-    networkTimeoutSeconds: 8,
     plugins: [new ExpirationPlugin({ maxEntries: 200, maxAgeSeconds: 7 * 24 * 3600 })],
   }),
 )

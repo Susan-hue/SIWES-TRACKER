@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { get } from '../api'
 import { PageHeader } from '../components/Badges.jsx'
 import { BarList, ColumnChart } from '../components/Charts.jsx'
+import Icon from '../components/Icon.jsx'
 import NotificationBanner from '../components/NotificationBanner.jsx'
 import { formatDate, pct } from '../constants'
+import useRefresh from '../useRefresh'
 
 function Stat({ label, value, sub }) {
   return (
@@ -29,9 +31,14 @@ export default function Dashboard() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  useEffect(() => {
-    get('dashboard/').then(setData).catch((err) => setError(err.message))
-  }, [])
+  useRefresh(() => {
+    get('dashboard/')
+      .then((d) => {
+        setData(d)
+        setError('')
+      })
+      .catch((err) => setError(err.message))
+  })
 
   if (error) return <p className="error-text">{error}</p>
   if (!data) return <p className="muted">Loading…</p>
@@ -94,7 +101,7 @@ export default function Dashboard() {
         <section className="panel">
           <div className="panel-head">
             <h2 className="label">Companies by status</h2>
-            <Link to="/pipeline" className="small">Open pipeline</Link>
+            <Link to="/pipeline" className="btn">Open pipeline <Icon name="chevron" size={14} /></Link>
           </div>
           <BarList
             rows={data.funnel.map((s) => ({

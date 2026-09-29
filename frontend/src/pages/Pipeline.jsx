@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { get, patch } from '../api'
 import { PageHeader, PriorityBadge } from '../components/Badges.jsx'
 import Icon from '../components/Icon.jsx'
 import { STATUSES, daysAgoLabel } from '../constants'
+import useRefresh from '../useRefresh'
 
 const PRIORITY_RANK = { high: 0, medium: 1, low: 2 }
 const VIEW_KEY = 'siwes-pipeline-view'
@@ -65,9 +66,9 @@ export default function Pipeline() {
   const [dragOver, setDragOver] = useState(null)
   const navigate = useNavigate()
 
-  useEffect(() => {
+  useRefresh(() => {
     get('companies/').then(setCompanies).catch((err) => setError(err.message))
-  }, [])
+  })
 
   const changeView = (v) => {
     setView(v)

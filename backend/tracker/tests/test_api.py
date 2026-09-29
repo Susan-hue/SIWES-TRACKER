@@ -177,6 +177,19 @@ class DashboardTests(TestCase):
         self.assertEqual(sum(w["count"] for w in res.data["weekly_volume"]), 2)
 
 
+    def test_pipeline_moves_count_without_logged_messages(self):
+        make_company(name="Moved", sector="Telecom", status=Company.Status.INTERVIEW)
+        make_company(name="Sent only", sector="Telecom", status=Company.Status.SENT)
+        make_company(name="Untouched", sector="Telecom")
+        res = APIClient().get("/api/dashboard/")
+        totals = res.data["totals"]
+        self.assertEqual(totals["contacted"], 2)
+        self.assertEqual(totals["responded"], 1)
+        self.assertEqual(totals["response_rate"], 0.5)
+        self.assertEqual(totals["messages_sent"], 0)
+        self.assertEqual(res.data["by_sector"][0]["contacted"], 2)
+
+
 class ImportTests(TestCase):
     def test_import_with_loose_headers_is_idempotent(self):
         import tempfile
